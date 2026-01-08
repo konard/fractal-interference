@@ -31,7 +31,7 @@ pub struct FractalGenerator {
 impl FractalGenerator {
     /// Creates a new fractal generator.
     #[must_use]
-    pub fn new(fractal_type: FractalType, config: FractalConfig) -> Self {
+    pub const fn new(fractal_type: FractalType, config: FractalConfig) -> Self {
         Self {
             fractal_type,
             config,
@@ -59,8 +59,8 @@ impl FractalGenerator {
 
         for py in 0..height {
             for px in 0..width {
-                let x = (px as f64 - f64::from(self.config.width) / 2.0) * scale + center_x;
-                let y = (py as f64 - f64::from(self.config.height) / 2.0) * scale + center_y;
+                let x = (px as f64 - f64::from(self.config.width) / 2.0).mul_add(scale, center_x);
+                let y = (py as f64 - f64::from(self.config.height) / 2.0).mul_add(scale, center_y);
 
                 let iterations = self.calculate_pixel(x, y);
                 data.push(iterations);

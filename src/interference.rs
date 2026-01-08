@@ -89,6 +89,7 @@ impl FractalInterference {
     }
 
     /// Additive interference (constructive).
+    #[allow(clippy::unused_self)]
     fn interfere_add(&self, data1: &[f64], data2: &[f64]) -> Vec<f64> {
         data1
             .iter()
@@ -98,6 +99,7 @@ impl FractalInterference {
     }
 
     /// Subtractive interference (destructive).
+    #[allow(clippy::unused_self)]
     fn interfere_subtract(&self, data1: &[f64], data2: &[f64]) -> Vec<f64> {
         data1
             .iter()
@@ -107,6 +109,7 @@ impl FractalInterference {
     }
 
     /// Multiplicative interference.
+    #[allow(clippy::unused_self)]
     fn interfere_multiply(&self, data1: &[f64], data2: &[f64]) -> Vec<f64> {
         // Find max to normalize
         let max1 = data1.iter().copied().fold(f64::NEG_INFINITY, f64::max);
@@ -148,7 +151,7 @@ impl FractalInterference {
                 let combined = wave1 + wave2;
 
                 // Map back to positive iteration-like values
-                (combined + 2.0 * amp) * (a.max(b) / (4.0 * amp)).max(1.0)
+                2.0f64.mul_add(amp, combined) * (a.max(b) / (4.0 * amp)).max(1.0)
             })
             .collect()
     }
@@ -173,7 +176,7 @@ impl FractalInterference {
                 let interference_factor = phase_diff.cos().abs();
 
                 // Combine with average value
-                (a + b) / 2.0 * interference_factor + (a + b) / 4.0
+                ((a + b) / 2.0).mul_add(interference_factor, (a + b) / 4.0)
             })
             .collect()
     }

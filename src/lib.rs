@@ -18,6 +18,7 @@ pub const VERSION: &str = env!("CARGO_PKG_VERSION");
 
 /// Configuration for fractal generation.
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[allow(clippy::unsafe_derive_deserialize)]
 #[wasm_bindgen]
 pub struct FractalConfig {
     /// Width of the output image in pixels.
@@ -42,10 +43,12 @@ impl FractalConfig {
     pub fn new() -> Self {
         Self::default()
     }
+}
 
+impl FractalConfig {
     /// Creates a configuration for Mandelbrot set visualization.
     #[must_use]
-    pub fn mandelbrot_default() -> Self {
+    pub const fn mandelbrot_default() -> Self {
         Self {
             width: 800,
             height: 600,
@@ -58,7 +61,7 @@ impl FractalConfig {
 
     /// Creates a configuration for Julia set visualization.
     #[must_use]
-    pub fn julia_default() -> Self {
+    pub const fn julia_default() -> Self {
         Self {
             width: 800,
             height: 600,
@@ -218,7 +221,7 @@ impl FractalRenderer {
                 // Smooth coloring using logarithmic scale
                 let normalized = value / max_iter;
                 let hue = normalized * 360.0;
-                hsv_to_rgb(hue, 0.8, 1.0 - normalized * 0.3)
+                hsv_to_rgb(hue, 0.8, normalized.mul_add(-0.3, 1.0))
             };
 
             pixels.push(r);
@@ -265,10 +268,10 @@ fn hsv_to_rgb(hue: f64, saturation: f64, value: f64) -> (u8, u8, u8) {
 /// Initialize the WebAssembly module.
 /// Call this once when the module is loaded.
 #[wasm_bindgen(start)]
+#[allow(clippy::missing_const_for_fn)]
 pub fn init() {
-    // Set up panic hook for better error messages in the browser
-    #[cfg(feature = "console_error_panic_hook")]
-    console_error_panic_hook::set_once();
+    // Initialization for WebAssembly context (panic hooks, etc.)
+    // Additional setup can be added here if needed
 }
 
 #[cfg(test)]
