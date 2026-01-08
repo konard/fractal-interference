@@ -1,255 +1,217 @@
-# rust-ai-driven-development-pipeline-template
+# Fractal Interference
 
-A comprehensive template for AI-driven Rust development with full CI/CD pipeline support.
+A WebAssembly-powered fractal interference visualization using Rust and React.js.
 
-[![CI/CD Pipeline](https://github.com/link-foundation/rust-ai-driven-development-pipeline-template/workflows/CI%2FCD%20Pipeline/badge.svg)](https://github.com/link-foundation/rust-ai-driven-development-pipeline-template/actions)
+[![CI/CD Pipeline](https://github.com/konard/fractal-interference/workflows/CI%2FCD%20Pipeline/badge.svg)](https://github.com/konard/fractal-interference/actions)
+[![Deploy to GitHub Pages](https://github.com/konard/fractal-interference/workflows/Deploy%20to%20GitHub%20Pages/badge.svg)](https://github.com/konard/fractal-interference/actions)
 [![Rust Version](https://img.shields.io/badge/rust-1.70%2B-blue.svg)](https://www.rust-lang.org/)
 [![License: Unlicense](https://img.shields.io/badge/license-Unlicense-blue.svg)](http://unlicense.org/)
 
-## Features
+## Live Demo
 
-- **Rust stable support**: Works with Rust stable version
-- **Cross-platform testing**: CI runs on Ubuntu, macOS, and Windows
-- **Comprehensive testing**: Unit tests, integration tests, and doc tests
-- **Code quality**: rustfmt + Clippy with pedantic lints
-- **Pre-commit hooks**: Automated code quality checks before commits
-- **CI/CD pipeline**: GitHub Actions with multi-platform support
-- **Changelog management**: Fragment-based changelog (like Changesets/Scriv)
-- **Release automation**: Automatic GitHub releases
+Visit the live demo at: [https://konard.github.io/fractal-interference/](https://konard.github.io/fractal-interference/)
+
+## Overview
+
+This project explores the concept of fractal interference - combining multiple fractals using wave-like interference patterns. The hypothesis is that by interfering fractals like waves, we can create any desired shape or pattern.
+
+### Features
+
+- **Multiple Fractal Types**:
+  - Mandelbrot Set
+  - Julia Sets (with customizable parameters)
+  - Burning Ship Fractal
+  - Tricorn (Mandelbar)
+
+- **Interference Modes**:
+  - **Add**: Constructive interference (average of two fractals)
+  - **Subtract**: Destructive interference (difference between fractals)
+  - **Multiply**: Multiplicative combination
+  - **Wave**: Sine wave-based interference with amplitude, frequency, and phase control
+  - **Phase**: Phase difference-based interference patterns
+
+- **Visualization**:
+  - 2D canvas rendering with smooth coloring
+  - 3D height map visualization using WebGL/Three.js
+  - Real-time pan and zoom
+  - Interactive parameter controls
+
+- **Technology Stack**:
+  - **Rust + WebAssembly**: High-performance fractal computation
+  - **React.js**: Modern UI framework
+  - **Three.js**: 3D visualization
+  - **Vite**: Fast build tooling
 
 ## Quick Start
 
-### Using This Template
+### Prerequisites
 
-1. Click "Use this template" on GitHub to create a new repository
-2. Clone your new repository
-3. Update `Cargo.toml` with your package name and description
-4. Rename the library and binary in `Cargo.toml`
-5. Update imports in tests and examples
-6. Build and start developing!
+- Rust 1.70+ with `wasm32-unknown-unknown` target
+- Node.js 18+
+- wasm-pack
 
 ### Development Setup
 
 ```bash
 # Clone the repository
-git clone https://github.com/link-foundation/rust-ai-driven-development-pipeline-template.git
-cd rust-ai-driven-development-pipeline-template
+git clone https://github.com/konard/fractal-interference.git
+cd fractal-interference
 
-# Build the project
-cargo build
+# Install Rust wasm target
+rustup target add wasm32-unknown-unknown
 
-# Run tests
-cargo test
+# Install wasm-pack
+cargo install wasm-pack
 
-# Run the example binary
-cargo run
+# Build WebAssembly module
+wasm-pack build --target web --out-dir web/pkg
 
-# Run an example
-cargo run --example basic_usage
+# Install web dependencies
+cd web
+npm install
+
+# Start development server
+npm run dev
 ```
 
 ### Running Tests
 
 ```bash
-# Run all tests
+# Run Rust tests
 cargo test
 
 # Run tests with verbose output
 cargo test --verbose
 
-# Run doc tests
-cargo test --doc
-
-# Run a specific test
-cargo test test_add_positive_numbers
-
-# Run tests with output
-cargo test -- --nocapture
+# Run WebAssembly tests
+wasm-pack test --headless --chrome
 ```
 
-### Code Quality Checks
+### Building for Production
 
 ```bash
-# Format code
-cargo fmt
+# Build WASM with optimizations
+wasm-pack build --target web --release --out-dir web/pkg
 
-# Check formatting (CI style)
-cargo fmt --check
-
-# Run Clippy lints
-cargo clippy --all-targets --all-features
-
-# Check file size limits
-node scripts/check-file-size.mjs
-
-# Run all checks
-cargo fmt --check && cargo clippy --all-targets --all-features && node scripts/check-file-size.mjs
+# Build web app
+cd web
+npm run build
 ```
+
+The production build will be in `web/dist/`.
 
 ## Project Structure
 
 ```
-.
-├── .github/
-│   └── workflows/
-│       └── release.yml         # CI/CD pipeline configuration
-├── changelog.d/                # Changelog fragments
-│   ├── README.md               # Fragment instructions
-│   └── *.md                    # Individual changelog entries
-├── examples/
-│   └── basic_usage.rs          # Usage examples
-├── scripts/
-│   ├── bump-version.mjs        # Version bumping utility
-│   ├── check-file-size.mjs     # File size validation script
-│   ├── collect-changelog.mjs   # Changelog collection script
-│   ├── create-github-release.mjs # GitHub release creation
-│   ├── detect-code-changes.mjs # Detects code changes for CI
-│   ├── get-bump-type.mjs       # Determines version bump type
-│   └── version-and-commit.mjs  # CI/CD version management
+fractal-interference/
 ├── src/
-│   ├── lib.rs                  # Library entry point
-│   └── main.rs                 # Binary entry point
+│   ├── lib.rs              # Library entry point with WASM bindings
+│   ├── main.rs             # CLI tool for testing
+│   ├── fractals.rs         # Fractal generation algorithms
+│   └── interference.rs     # Wave interference implementation
+├── web/
+│   ├── src/
+│   │   ├── App.jsx         # Main React component
+│   │   ├── components/     # UI components
+│   │   └── styles.css      # Styling
+│   ├── index.html          # HTML entry point
+│   ├── package.json        # Node dependencies
+│   └── vite.config.js      # Vite configuration
 ├── tests/
-│   └── integration_test.rs     # Integration tests
-├── .gitignore                  # Git ignore patterns
-├── .pre-commit-config.yaml     # Pre-commit hooks configuration
-├── Cargo.toml                  # Project configuration
-├── CHANGELOG.md                # Project changelog
-├── CONTRIBUTING.md             # Contribution guidelines
-├── LICENSE                     # Unlicense (public domain)
-└── README.md                   # This file
+│   └── integration_test.rs # Integration tests
+├── examples/
+│   └── basic_usage.rs      # Usage examples
+├── .github/workflows/
+│   ├── release.yml         # CI/CD pipeline
+│   └── deploy.yml          # GitHub Pages deployment
+├── Cargo.toml              # Rust dependencies
+└── README.md               # This file
 ```
 
-## Design Choices
+## Usage
 
-### Code Quality Tools
-
-- **rustfmt**: Standard Rust code formatter
-  - Ensures consistent code style across the project
-  - Configured to run on all Rust files
-
-- **Clippy**: Rust linter with comprehensive checks
-  - Pedantic and nursery lints enabled for strict code quality
-  - Catches common mistakes and suggests improvements
-  - Enforces best practices
-
-- **Pre-commit hooks**: Automated checks before each commit
-  - Runs rustfmt to ensure formatting
-  - Runs Clippy to catch issues early
-  - Runs tests to prevent broken commits
-
-### Testing Strategy
-
-The template supports multiple levels of testing:
-
-- **Unit tests**: In `src/lib.rs` using `#[cfg(test)]` modules
-- **Integration tests**: In `tests/` directory
-- **Doc tests**: In documentation examples using `///` comments
-- **Examples**: In `examples/` directory (also serve as documentation)
-
-### Changelog Management
-
-This template uses a fragment-based changelog system similar to:
-- [Changesets](https://github.com/changesets/changesets) (JavaScript)
-- [Scriv](https://scriv.readthedocs.io/) (Python)
-
-Benefits:
-- **No merge conflicts**: Multiple PRs can add fragments without conflicts
-- **Per-PR documentation**: Each PR documents its own changes
-- **Automated collection**: Fragments are collected during release
-- **Consistent format**: Template ensures consistent changelog entries
+### CLI Tool
 
 ```bash
-# Create a changelog fragment
-touch changelog.d/$(date +%Y%m%d_%H%M%S)_my_change.md
+# Run the CLI demo
+cargo run
 
-# Edit the fragment to document your changes
+# Run with features
+cargo run --features cli
 ```
 
-### CI/CD Pipeline
-
-The GitHub Actions workflow provides:
-
-1. **Linting**: rustfmt and Clippy checks
-2. **Changelog check**: Warns if PRs are missing changelog fragments
-3. **Test matrix**: 3 OS (Ubuntu, macOS, Windows) with Rust stable
-4. **Building**: Release build and package validation
-5. **Release**: Automated GitHub releases when version changes
-
-### Release Automation
-
-The release workflow supports:
-
-- **Auto-release**: Automatically creates releases when version in Cargo.toml changes
-- **Manual release**: Trigger releases via workflow_dispatch with version bump type
-- **Changelog collection**: Automatically collects fragments during release
-- **GitHub releases**: Automatic creation with CHANGELOG content
-
-## Configuration
-
-### Updating Package Name
-
-After creating a repository from this template:
-
-1. Update `Cargo.toml`:
-   - Change `name` field
-   - Update `repository` and `documentation` URLs
-   - Change `[lib]` and `[[bin]]` names
-
-2. Rename the crate in imports:
-   - `tests/integration_test.rs`
-   - `examples/basic_usage.rs`
-   - `src/main.rs`
-
-### Clippy Configuration
-
-Clippy is configured in `Cargo.toml` under `[lints.clippy]`:
-
-- Pedantic lints enabled for strict code quality
-- Nursery lints enabled for additional checks
-- Some common patterns allowed (e.g., `module_name_repetitions`)
-
-### rustfmt Configuration
-
-Uses default rustfmt settings. To customize, create a `rustfmt.toml`:
-
-```toml
-edition = "2021"
-max_width = 100
-tab_spaces = 4
-```
-
-## Scripts Reference
-
-| Script                              | Description                    |
-| ----------------------------------- | ------------------------------ |
-| `cargo test`                        | Run all tests                  |
-| `cargo fmt`                         | Format code                    |
-| `cargo clippy`                      | Run lints                      |
-| `cargo run --example basic_usage`   | Run example                    |
-| `node scripts/check-file-size.mjs`  | Check file size limits         |
-| `node scripts/bump-version.mjs`     | Bump version                   |
-
-## Example Usage
+### Rust Library
 
 ```rust
-use my_package::{add, multiply, delay};
+use fractal_interference::{FractalConfig, FractalRenderer};
 
-#[tokio::main]
-async fn main() {
-    // Basic arithmetic
-    let sum = add(2, 3);     // 5
-    let product = multiply(2, 3);  // 6
+// Create configuration
+let mut config = FractalConfig::mandelbrot_default();
+config.width = 800;
+config.height = 600;
 
-    println!("2 + 3 = {sum}");
-    println!("2 * 3 = {product}");
+// Create renderer
+let mut renderer = FractalRenderer::new(config);
 
-    // Async operations
-    delay(1.0).await;  // Wait for 1 second
-}
+// Render Mandelbrot set
+let pixels = renderer.render();
+
+// Enable interference with Julia set
+renderer.enable_second_fractal("julia");
+renderer.set_interference_mode("wave");
+renderer.set_wave_params(1.0, 2.0, 0.5);
+
+// Render interference pattern
+let interference_pixels = renderer.render();
 ```
 
-See `examples/basic_usage.rs` for more examples.
+### Web Interface
+
+The web interface provides interactive controls for:
+
+1. **Fractal Selection**: Choose primary and secondary fractal types
+2. **Julia Parameters**: Adjust c values for Julia sets
+3. **View Controls**: Zoom, pan, and center position
+4. **Rendering**: Iteration count and resolution
+5. **Interference**: Mode selection and wave parameters
+6. **Presets**: Quick access to interesting Julia set parameters
+
+## The Concept
+
+Fractals are mathematical objects with self-similar patterns at every scale. This project explores treating fractals as waves that can interfere with each other:
+
+1. **Constructive Interference**: When fractal values align, they amplify
+2. **Destructive Interference**: When values oppose, they cancel out
+3. **Wave Interference**: Applying sine functions to create ripple-like patterns
+4. **Phase Interference**: Using phase differences to create unique patterns
+
+The hypothesis is that through careful selection of fractal types and interference parameters, any desired shape can be approximated - similar to how Fourier series can represent any periodic function.
+
+## API Reference
+
+### FractalConfig
+
+| Field | Type | Description |
+|-------|------|-------------|
+| width | u32 | Image width in pixels |
+| height | u32 | Image height in pixels |
+| max_iterations | u32 | Maximum escape iterations |
+| zoom | f64 | Zoom level |
+| center_x | f64 | X coordinate of center |
+| center_y | f64 | Y coordinate of center |
+
+### FractalRenderer Methods
+
+| Method | Description |
+|--------|-------------|
+| `new(config)` | Create new renderer |
+| `set_fractal_type(type)` | Set primary fractal |
+| `set_julia_params(real, imag)` | Set Julia c parameter |
+| `enable_second_fractal(type)` | Enable interference |
+| `set_interference_mode(mode)` | Set interference mode |
+| `set_wave_params(amp, freq, phase)` | Set wave parameters |
+| `render()` | Generate RGBA pixels |
+| `render_3d_heightmap()` | Generate height values |
 
 ## Contributing
 
@@ -262,25 +224,24 @@ Contributions are welcome! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for gui
 3. Make your changes and add tests
 4. Run quality checks: `cargo fmt && cargo clippy && cargo test`
 5. Add a changelog fragment
-6. Commit your changes (pre-commit hooks will run automatically)
+6. Commit your changes
 7. Push and create a Pull Request
 
 ## License
 
 [Unlicense](LICENSE) - Public Domain
 
-This is free and unencumbered software released into the public domain. See [LICENSE](LICENSE) for details.
+This is free and unencumbered software released into the public domain.
 
 ## Acknowledgments
 
-Inspired by:
-- [js-ai-driven-development-pipeline-template](https://github.com/link-foundation/js-ai-driven-development-pipeline-template)
-- [python-ai-driven-development-pipeline-template](https://github.com/link-foundation/python-ai-driven-development-pipeline-template)
+- Inspired by the mathematical beauty of fractals
+- Built on the Rust WebAssembly ecosystem
+- React Three Fiber for 3D visualization
 
 ## Resources
 
-- [Rust Book](https://doc.rust-lang.org/book/)
-- [Cargo Book](https://doc.rust-lang.org/cargo/)
-- [Clippy Documentation](https://rust-lang.github.io/rust-clippy/)
-- [rustfmt Documentation](https://rust-lang.github.io/rustfmt/)
-- [Pre-commit Documentation](https://pre-commit.com/)
+- [Mandelbrot Set - Wikipedia](https://en.wikipedia.org/wiki/Mandelbrot_set)
+- [Julia Set - Wikipedia](https://en.wikipedia.org/wiki/Julia_set)
+- [Wave Interference - Wikipedia](https://en.wikipedia.org/wiki/Wave_interference)
+- [Rust WebAssembly Book](https://rustwasm.github.io/docs/book/)
